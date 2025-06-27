@@ -28,10 +28,11 @@ export const UserButton = () => {
 
   if (!user) return null;
 
-  const { name, email } = user;
+  const { firstName, lastName, email } = user;
+  const fullName = `${firstName} ${lastName}`.trim();
 
-  const avatarFallback = name
-    ? name.charAt(0).toUpperCase()
+  const avatarFallback = firstName
+    ? firstName.charAt(0).toUpperCase()
     : email.charAt(0).toUpperCase() ?? "U";
 
   return (
@@ -58,7 +59,7 @@ export const UserButton = () => {
 
           <div className="flex flex-col items-center justify-center">
             <p className="text-sm font-medium text-neutral-900">
-              {name || "User"}
+              {fullName || "Пользователь"}
             </p>
             <p className="text-xs text-neutral-500">{email}</p>
           </div>
@@ -69,7 +70,7 @@ export const UserButton = () => {
           onClick={() => logout()}
         >
           <LogOut className="size-4 mr-2" />
-          Log Out
+          Выход
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

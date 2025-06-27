@@ -1,35 +1,39 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { client } from "@/lib/rpc";
+import { LoginRequest, LoginResponse } from "@/lib/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { InferRequestType, InferResponseType } from "hono";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { client } from "@/lib/rpc";
-
-type ResponseType = InferResponseType<(typeof client.api.auth.login)["$post"]>;
-type RequestType = InferRequestType<(typeof client.api.auth.login)["$post"]>;
+type RequestType = LoginRequest;
+type ResponseType = LoginResponse;
 
 export const useLogin = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json }) => {
-      const response = await client.api.auth.login["$post"]({ json });
-
-      if (!response.ok) {
-        throw new Error("Failed to log in");
+    mutationFn: async (json: RequestType) => {
+      const response = await client.login(json.email, json.password);
+      
+      if (response.accessToken) {
+        // Сохраняем токены
+        client.setToken(response.accessToken);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('refresh_token', response.refreshToken);
+        }
       }
-
-      return await response.json();
+      
+      return response as ResponseType;
     },
     onSuccess: () => {
-      toast.success("Logged in");
+      toast.success("Успешный вход в систему");
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });
     },
-    onError: () => {
-      toast.error("Failed to log in");
+    onError: (error: Error) => {
+      toast.error(error.message || "Ошибка входа");
     },
   });
+
   return mutation;
 };

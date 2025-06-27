@@ -3,31 +3,37 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { SettingsIcon, UsersIcon } from "lucide-react";
+import { SettingsIcon, UsersIcon, FolderIcon } from "lucide-react";
 import {
   GoCheckCircle,
   GoCheckCircleFill,
   GoHome,
   GoHomeFill,
 } from "react-icons/go";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { useProjectId } from "@/features/projects/hooks/use-project-id";
 
 const routes = [
-  { label: "Home", href: "", icon: GoHome, activeIcon: GoHomeFill },
+  { label: "Главная", href: "", icon: GoHome, activeIcon: GoHomeFill },
   {
-    label: "My Tasks",
+    label: "Мои задачи",
     href: "/tasks",
     icon: GoCheckCircle,
     activeIcon: GoCheckCircleFill,
   },
   {
-    label: "Settings",
+    label: "Проекты",
+    href: "/projects",
+    icon: FolderIcon,
+    activeIcon: FolderIcon,
+  },
+  {
+    label: "Настройки",
     href: "/settings",
     icon: SettingsIcon,
     activeIcon: SettingsIcon,
   },
   {
-    label: "Members",
+    label: "Участники",
     href: "/members",
     icon: UsersIcon,
     activeIcon: UsersIcon,
@@ -35,13 +41,19 @@ const routes = [
 ];
 
 export const Navigation = () => {
-  const workspaceId = useWorkspaceId();
+  const projectId = useProjectId();
   const pathname = usePathname();
 
   return (
     <ul className="flex flex-col">
       {routes.map((item) => {
-        const fullHref = `/workspaces/${workspaceId}${item.href}`;
+        // Для главной страницы и проектов используем общие маршруты
+        const fullHref = item.href === "" || item.href === "/projects" 
+          ? `/dashboard${item.href}` 
+          : projectId 
+            ? `/projects/${projectId}${item.href}`
+            : `/dashboard${item.href}`;
+        
         const isActive = pathname === fullHref;
         const Icon = isActive ? item.activeIcon : item.icon;
 

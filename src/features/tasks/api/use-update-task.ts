@@ -1,44 +1,29 @@
-import { toast } from "sonner";
-import { InferRequestType, InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { client } from "@/lib/rpc";
+import { UpdateTaskModel } from "@/lib/types";
+import { Task } from "../types";
+import { toast } from "sonner";
 
-type ResponseType = InferResponseType<
-  (typeof client.api.tasks)[":taskId"]["$patch"],
-  200
->;
-type RequestType = InferRequestType<
-  (typeof client.api.tasks)[":taskId"]["$patch"]
->;
+type RequestType = UpdateTaskModel;
+type ResponseType = Task;
 
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json, param }) => {
-      const response = await client.api.tasks[":taskId"]["$patch"]({
-        json,
-        param,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update task");
-      }
-
-      return await response.json();
+    mutationFn: async (json: RequestType) => {
+      const response = await client.updateTask(json);
+      return response;
     },
-    onSuccess: ({ data }) => {
-      toast.success("Task updated");
-
-      queryClient.invalidateQueries({ queryKey: ["project-analytics"] });
-      queryClient.invalidateQueries({ queryKey: ["workspace-analytics"] });
+    onSuccess: () => {
+      toast.success("Задача обновлена успешно");
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task", data.$id] });
+      queryClient.invalidateQueries({ queryKey: ["task", undefined] });
     },
-    onError: () => {
-      toast.error("Failed to update task");
+    onError: (error: Error) => {
+      toast.error(error.message || "Ошибка обновления задачи");
     },
   });
+
   return mutation;
 };

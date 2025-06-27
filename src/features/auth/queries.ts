@@ -1,11 +1,12 @@
-import { createSessionClient } from "@/lib/appwrite";
+import { client } from "@/lib/rpc";
+import { UserData } from "@/lib/types";
 
-export const getCurrent = async () => {
+export const getCurrent = async (): Promise<UserData | null> => {
   try {
-    const { account } = await createSessionClient();
-
-    return await account.get();
-  } catch {
+    const user = await client.getCurrentUser();
+    return user;
+  } catch (error) {
+    console.error("Failed to get current user:", error);
     return null;
   }
 };

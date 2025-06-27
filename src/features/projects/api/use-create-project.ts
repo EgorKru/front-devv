@@ -1,35 +1,27 @@
-import { toast } from "sonner";
-import { InferRequestType, InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { client } from "@/lib/rpc";
+import { ProjectRequest, Project } from "@/lib/types";
+import { toast } from "sonner";
 
-type ResponseType = InferResponseType<
-  (typeof client.api.projects)["$post"],
-  200
->;
-type RequestType = InferRequestType<(typeof client.api.projects)["$post"]>;
+type RequestType = ProjectRequest;
+type ResponseType = Project;
 
 export const useCreateProject = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ form }) => {
-      const response = await client.api.projects["$post"]({ form });
-
-      if (!response.ok) {
-        throw new Error("Failed to create project");
-      }
-
-      return await response.json();
+    mutationFn: async (json: RequestType) => {
+      const response = await client.createProject(json);
+      return response;
     },
     onSuccess: () => {
-      toast.success("Project created");
+      toast.success("Проект создан успешно");
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
-    onError: () => {
-      toast.error("Failed to create project");
+    onError: (error: Error) => {
+      toast.error(error.message || "Ошибка создания проекта");
     },
   });
+
   return mutation;
 };

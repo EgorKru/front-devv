@@ -1,25 +1,23 @@
 import { Hono } from "hono";
+import { logger } from "hono/logger";
 import { handle } from "hono/vercel";
 
-import auth from "@/features/auth/server/route";
-import members from "@/features/members/server/route";
-import projects from "@/features/projects/server/route";
-import workspaces from "@/features/workspaces/server/route";
-import tasks from "@/features/tasks/server/route";
-
+// Создаем базовое приложение Hono без старых роутов Appwrite
 const app = new Hono().basePath("/api");
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routes = app
-  .route("/auth", auth)
-  .route("/workspaces", workspaces)
-  .route("/members", members)
-  .route("/projects", projects)
-  .route("/tasks", tasks);
+app.use(logger());
+
+// Временная заглушка для API
+app.get("/health", (c) => {
+  return c.json({ status: "ok", message: "WorkTech API ready" });
+});
+
+// Fallback для неизвестных роутов
+app.all("*", (c) => {
+  return c.json({ error: "Not Found" }, 404);
+});
 
 export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);
 export const DELETE = handle(app);
-
-export type AppType = typeof routes;

@@ -2,16 +2,19 @@
 
 import { z } from "zod";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DottedSeparator } from "@/components/dotted-separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Card,
   CardContent,
@@ -24,6 +27,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -35,29 +39,28 @@ export const SignUpCard = () => {
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
+      middleName: "",
       email: "",
+      phone: "",
+      birthDate: "",
+      gender: undefined,
       password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    mutate({ json: values });
+    mutate(values);
   };
 
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
-        <CardTitle className="text-2xl">Sign Up</CardTitle>
+        <CardTitle className="text-2xl">Регистрация в WorkTech</CardTitle>
         <CardDescription>
-          By signing up, you agree to our{" "}
-          <Link href="/privacy">
-            <span className="text-blue-700">Privacy Policy</span>
-          </Link>{" "}
-          and{" "}
-          <Link href="/terms">
-            <span className="text-blue-700">Terms of Service</span>
-          </Link>
+          Заполните форму для создания аккаунта
         </CardDescription>
       </CardHeader>
       <div className="px-7 mb-2">
@@ -66,16 +69,55 @@ export const SignUpCard = () => {
       <CardContent className="px-7">
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                name="firstName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Имя *</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Введите имя"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="lastName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Фамилия *</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Введите фамилию"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
-              name="name"
+              name="middleName"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Отчество</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="Enter your name"
+                      placeholder="Введите отчество (необязательно)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -88,37 +130,116 @@ export const SignUpCard = () => {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Email *</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      type="text"
-                      placeholder="Enter your email"
+                      type="email"
+                      placeholder="Введите email"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                name="phone"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Телефон</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="tel"
+                        placeholder="+7 (999) 999-99-99"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="birthDate"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Дата рождения</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="date"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              name="gender"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Пол *</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите пол" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="MALE">Мужской</SelectItem>
+                      <SelectItem value="FEMALE">Женский</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Пароль *</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="password"
-                      placeholder="Enter your password"
-                      min={8}
-                      max={256}
+                      placeholder="Введите пароль"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              name="confirmPassword"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Подтверждение пароля *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Повторите пароль"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button disabled={isPending} size="lg" className="w-full">
-              Register
+              Зарегистрироваться
             </Button>
           </form>
         </Form>
@@ -128,39 +249,11 @@ export const SignUpCard = () => {
         <DottedSeparator />
       </div>
 
-      <CardContent className="px-7 flex flex-col gap-y-4">
-        <Button
-          variant="secondary"
-          size="lg"
-          className="w-full"
-          disabled={isPending}
-          onClick={() => signUpWithGoogle()}
-        >
-          <FcGoogle className="mr-2 size-5" />
-          Login with Google
-        </Button>
-
-        <Button
-          variant="secondary"
-          size="lg"
-          className="w-full"
-          disabled={isPending}
-          onClick={() => signUpWithGithub()}
-        >
-          <FaGithub className="mr-2 size-5" />
-          Login with Github
-        </Button>
-      </CardContent>
-
-      <div className="px-7">
-        <DottedSeparator />
-      </div>
-
       <CardContent className="p-7 flex items-center justify-center">
         <p>
-          Already have an account?
+          Уже есть аккаунт?
           <Link href="/sign-in">
-            <span className="text-blue-700">&nbsp;Sign In</span>
+            <span className="text-blue-700">&nbsp;Войти</span>
           </Link>
         </p>
       </CardContent>
