@@ -4,7 +4,7 @@ export const createProjectSchema = z.object({
   name: z.string().trim().min(1, "Название проекта обязательно").max(50, "Максимум 50 символов"),
   code: z.string().trim().min(1, "Код проекта обязателен").max(10, "Максимум 10 символов"),
   description: z.string().max(4096, "Максимум 4096 символов").optional(),
-  active: z.boolean().optional(),
+  active: z.boolean().default(true),
 });
 
 export const updateProjectSchema = z.object({

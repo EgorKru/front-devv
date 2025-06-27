@@ -1,12 +1,28 @@
-import { redirect } from "next/navigation";
+"use client";
 
-import { getCurrent } from "@/features/auth/queries";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useCurrent } from "@/features/auth/api/use-current";
 import { SignInCard } from "@/features/auth/components/sign-in-card";
+import { PageLoader } from "@/components/page-loader";
 
-const SignInPage = async () => {
-  const user = await getCurrent();
+const SignInPage = () => {
+  const router = useRouter();
+  const { data: user, isLoading } = useCurrent();
 
-  if (user) redirect("/");
+  useEffect(() => {
+    if (user && !isLoading) {
+      router.push("/");
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading) {
+    return <PageLoader />;
+  }
+
+  if (user) {
+    return <PageLoader />;
+  }
 
   return <SignInCard />;
 };

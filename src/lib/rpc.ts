@@ -47,16 +47,27 @@ class WorkTechApiClient {
     options: RequestInit = {},
     params?: Record<string, string>
   ): Promise<T> {
+    // На сервере без токена не делаем запросы
+    if (typeof window === 'undefined' && !this.token) {
+      throw new Error('No token available on server');
+    }
+
     const url = buildApiUrl(endpoint, params);
     
     const headers = new Headers({
-      'Content-Type': 'application/json',
       ...options.headers,
     });
 
+    // Добавляем Content-Type только для запросов с телом
+    const method = options.method || 'GET';
+    if (method !== 'GET' && method !== 'HEAD') {
+      headers.set('Content-Type', 'application/json');
+    }
+
     // Добавляем JWT токен если он есть
     if (this.token) {
-      headers.set('Authorization', `Bearer ${this.token}`);
+      const authHeader = `Bearer ${this.token}`;
+      headers.set('Authorization', authHeader);
     }
 
     try {
@@ -85,17 +96,23 @@ class WorkTechApiClient {
 
       return await this.handleResponse<T>(response);
     } catch (error) {
-      console.error('API Request failed:', error);
+      console.error('❌ API Request failed:', error);
       throw error;
     }
   }
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ 
-        error: 'Network Error', 
-        message: `HTTP ${response.status}` 
-      }));
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { 
+          error: 'Network Error', 
+          message: `HTTP ${response.status}` 
+        };
+      }
+      
       throw new Error(errorData.message || errorData.error || 'Request failed');
     }
 

@@ -10,10 +10,9 @@ import {
   GoHome,
   GoHomeFill,
 } from "react-icons/go";
-import { useProjectId } from "@/features/projects/hooks/use-project-id";
 
 const routes = [
-  { label: "Главная", href: "", icon: GoHome, activeIcon: GoHomeFill },
+  { label: "Главная", href: "/", icon: GoHome, activeIcon: GoHomeFill },
   {
     label: "Мои задачи",
     href: "/tasks",
@@ -41,24 +40,16 @@ const routes = [
 ];
 
 export const Navigation = () => {
-  const projectId = useProjectId();
   const pathname = usePathname();
 
   return (
     <ul className="flex flex-col">
       {routes.map((item) => {
-        // Для главной страницы и проектов используем общие маршруты
-        const fullHref = item.href === "" || item.href === "/projects" 
-          ? `/dashboard${item.href}` 
-          : projectId 
-            ? `/projects/${projectId}${item.href}`
-            : `/dashboard${item.href}`;
-        
-        const isActive = pathname === fullHref;
+        const isActive = pathname === item.href;
         const Icon = isActive ? item.activeIcon : item.icon;
 
         return (
-          <Link key={item.href} href={fullHref}>
+          <Link key={item.href} href={item.href}>
             <div
               className={cn(
                 "flex items-center gap-2.5 p-2.5 rounded-md font-medium hover:text-primary transition text-neutral-500",
