@@ -84,7 +84,7 @@ export const CreateTaskForm = ({
                   <FormItem>
                     <FormLabel>Название задачи *</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Введите название задачи" />
+                      <Input {...field} placeholder="Введите название задачи" autoComplete="off" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -153,6 +153,7 @@ export const CreateTaskForm = ({
                       <Input 
                         {...field} 
                         placeholder="ID или email пользователя"
+                        autoComplete="email"
                       />
                     </FormControl>
                     <FormMessage />

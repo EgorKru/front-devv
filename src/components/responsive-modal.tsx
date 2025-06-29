@@ -1,7 +1,8 @@
 import { useMedia } from "react-use";
 
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
 
 interface ResponsiveModalProps {
   children: React.ReactNode;
@@ -24,12 +25,14 @@ export const ResponsiveModal = ({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="w-full sm:max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]">
-          <DialogTitle className="sr-only">
-            {title || "Модальное окно"}
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            {description || "Модальное окно для взаимодействия с приложением"}
-          </DialogDescription>
+          <VisuallyHidden>
+            <DialogTitle>
+              {title || "Модальное окно"}
+            </DialogTitle>
+            <DialogDescription>
+              {description || "Модальное окно для взаимодействия с приложением"}
+            </DialogDescription>
+          </VisuallyHidden>
           {children}
         </DialogContent>
       </Dialog>
@@ -39,6 +42,14 @@ export const ResponsiveModal = ({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
+        <VisuallyHidden>
+          <DrawerTitle>
+            {title || "Модальное окно"}
+          </DrawerTitle>
+          <DrawerDescription>
+            {description || "Модальное окно для взаимодействия с приложением"}
+          </DrawerDescription>
+        </VisuallyHidden>
         <div className="overflow-y-auto hide-scrollbar max-h-[85vh]">
           {children}
         </div>

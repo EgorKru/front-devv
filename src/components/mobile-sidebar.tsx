@@ -4,7 +4,8 @@ import { MenuIcon } from "lucide-react";
 
 import { Sidebar } from "./sidebar";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "./ui/sheet";
+import { VisuallyHidden } from "./ui/visually-hidden";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -24,6 +25,10 @@ export const MobileSidebar = () => {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0">
+        <VisuallyHidden>
+          <SheetTitle>Навигационное меню</SheetTitle>
+          <SheetDescription>Боковое меню для навигации по приложению</SheetDescription>
+        </VisuallyHidden>
         <Sidebar />
       </SheetContent>
     </Sheet>

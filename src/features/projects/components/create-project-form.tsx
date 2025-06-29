@@ -71,7 +71,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                   <FormItem>
                     <FormLabel>Название проекта *</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Введите название проекта" />
+                      <Input {...field} placeholder="Введите название проекта" autoComplete="off" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,6 +91,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                         maxLength={10}
                         style={{ textTransform: 'uppercase' }}
                         onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        autoComplete="off"
                       />
                     </FormControl>
                     <FormMessage />

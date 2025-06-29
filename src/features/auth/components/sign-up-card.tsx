@@ -81,6 +81,7 @@ export const SignUpCard = () => {
                         {...field}
                         type="text"
                         placeholder="Введите имя"
+                        autoComplete="given-name"
                       />
                     </FormControl>
                     <FormMessage />
@@ -99,6 +100,7 @@ export const SignUpCard = () => {
                         {...field}
                         type="text"
                         placeholder="Введите фамилию"
+                        autoComplete="family-name"
                       />
                     </FormControl>
                     <FormMessage />
@@ -118,6 +120,7 @@ export const SignUpCard = () => {
                       {...field}
                       type="text"
                       placeholder="Введите отчество (необязательно)"
+                      autoComplete="additional-name"
                     />
                   </FormControl>
                   <FormMessage />
@@ -136,6 +139,7 @@ export const SignUpCard = () => {
                       {...field}
                       type="email"
                       placeholder="Введите email"
+                      autoComplete="email"
                     />
                   </FormControl>
                   <FormMessage />
@@ -155,6 +159,7 @@ export const SignUpCard = () => {
                         {...field}
                         type="tel"
                         placeholder="+7 (999) 999-99-99"
+                        autoComplete="tel"
                       />
                     </FormControl>
                     <FormMessage />
@@ -172,6 +177,7 @@ export const SignUpCard = () => {
                       <Input
                         {...field}
                         type="date"
+                        autoComplete="bday"
                       />
                     </FormControl>
                     <FormMessage />
@@ -213,6 +219,7 @@ export const SignUpCard = () => {
                       {...field}
                       type="password"
                       placeholder="Введите пароль"
+                      autoComplete="new-password"
                     />
                   </FormControl>
                   <FormMessage />
@@ -231,6 +238,7 @@ export const SignUpCard = () => {
                       {...field}
                       type="password"
                       placeholder="Повторите пароль"
+                      autoComplete="new-password"
                     />
                   </FormControl>
                   <FormMessage />
